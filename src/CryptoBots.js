@@ -36,7 +36,8 @@ function CryptoBots() {
                     return (
                         <div className="bot" key={bot.id}>
                             <div className="details">
-                                <p>{bot.id}</p>
+                                <p>Идентификатор бота: {bot.id}</p>
+                                <p>Пользователи бота: {bot.users}</p>
                             </div>
                         </div>
                     );
