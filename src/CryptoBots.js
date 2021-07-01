@@ -15,7 +15,7 @@ function CryptoBots() {
             {headers: {
                 "YT-AUTH-TOKEN": TOKEN
             }});
-        console.log(response.data['data'])
+        console.log(response.data['data'].id)
         setBots(response.data['data']);
     };
 
@@ -31,17 +31,16 @@ function CryptoBots() {
             </div>
 
             <div className="bots">
-                {bots}
-                {/*{bots &&*/}
-                {/*bots.map((bot) => {*/}
-                {/*    return (*/}
-                {/*        <div className="bot" key={bot}>*/}
-                {/*            <div className="details">*/}
-                {/*                <p>{bot}</p>*/}
-                {/*            </div>*/}
-                {/*        </div>*/}
-                {/*    );*/}
-                {/*})}*/}
+                {bots &&
+                bots.map((bot) => {
+                    return (
+                        <div className="bot" key={bot.id}>
+                            <div className="details">
+                                <p>{bot.id}</p>
+                            </div>
+                        </div>
+                    );
+                })}
             </div>
         </div>
     );
