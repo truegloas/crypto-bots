@@ -1,45 +1,43 @@
-import React, { Component } from 'react'
-import logo from './logo.svg';
+import axios from 'axios'
+import React, { useState } from 'react'
 import './App.css';
 
 
-const BotList = ({bots}) => {
-  bots.map(bot => <li key={bot}>{bot}</li>)
-}
+function App() {
+    const BOT_SERVICE_URL = 'https://back.yourtar.ru/api/admin/bot/?offset=0'
 
-const BOT_SERVICE_URL = 'https://back.yourtar.ru/api/admin/bot/?offset=0'
+    const [bots, setBots] = useState(null);
 
-class App extends Component {
-  constructor(props) {
-    super(props);
-    this.timer = null;
-    this.state = {
-      isFetching: false,
-      bots: ['1']};
-  }
+    const fetchData = async () => {
+        const response = await axios.get(BOT_SERVICE_URL);
+        setBots(response.data);
+    };
 
-  render () {
-    return (
-        <div className="App">
-          <header className="App-header">
-            <img src={logo} className="App-logo" alt="logo"/>
-            <BotList bots={this.state.bots} />
-          </header>
+  return (
+      <div className="App">
+        <h1>GET Bots</h1>
+        <h2>Fetch a list from an API and display it</h2>
+
+        <div>
+          <button className="fetch-button" onClick={fetchData}>
+            Fetch Data
+          </button>
         </div>
-    );
-  }
 
-  componentDidMount() {
-    this.fetchBots()
-  }
-
-  fetchBots = () => {
-    this.setState({...this.state, isFetching: true})
-    fetch(BOT_SERVICE_URL)
-        .then(response => response.json())
-        .then(result => this.setState({bots: result, isFetching: false}))
-        .catch(e => console.log(e));
-  }
+        <div className="bots">
+          {bots &&
+          bots.map((bot) => {
+            return (
+                <div className="bot" key={bot}>
+                  <div className="details">
+                    <p>{bot}</p>
+                  </div>
+                </div>
+            );
+          })}
+        </div>
+      </div>
+  );
 }
 
 export default App;
