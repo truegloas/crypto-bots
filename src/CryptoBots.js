@@ -1,6 +1,7 @@
 import axios from 'axios'
 import React, { useState } from 'react'
 import './CryptoBots.css';
+import TOKEN from './local/local.js';
 
 
 function CryptoBots() {
@@ -9,8 +10,13 @@ function CryptoBots() {
     const [bots, setBots] = useState(null);
 
     const fetchData = async () => {
-        const response = await axios.get(BOT_SERVICE_URL);
-        setBots(response.data);
+        const response = await axios.get(
+            BOT_SERVICE_URL,
+            {headers: {
+                "YT-AUTH-TOKEN": TOKEN
+            }});
+        console.log(response.data['data'])
+        setBots(response.data['data']);
     };
 
     return (
@@ -25,16 +31,17 @@ function CryptoBots() {
             </div>
 
             <div className="bots">
-                {bots &&
-                bots.map((bot) => {
-                    return (
-                        <div className="bot" key={bot}>
-                            <div className="details">
-                                <p>{bot}</p>
-                            </div>
-                        </div>
-                    );
-                })}
+                {bots}
+                {/*{bots &&*/}
+                {/*bots.map((bot) => {*/}
+                {/*    return (*/}
+                {/*        <div className="bot" key={bot}>*/}
+                {/*            <div className="details">*/}
+                {/*                <p>{bot}</p>*/}
+                {/*            </div>*/}
+                {/*        </div>*/}
+                {/*    );*/}
+                {/*})}*/}
             </div>
         </div>
     );
