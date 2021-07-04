@@ -9,16 +9,14 @@ import TOKEN from './local/local.js';
 function CryptoBots() {
     const BOT_URL_SERVICE = 'https://back.yourtar.ru/api/admin/bot/';
 
-    const config = {headers: {
-            "YT-AUTH-TOKEN": TOKEN
-        }}
-
     const [bots, setBots] = useState(null);
 
     const getBots = async () => {
         const response = await axios.get(
             'https://back.yourtar.ru/api/admin/bot/?offset=0',
-            config
+            {headers: {
+                    "YT-AUTH-TOKEN": TOKEN
+                }}
         );
         setBots(response.data['data'])
     };
@@ -26,13 +24,13 @@ function CryptoBots() {
     const addBot = async () => {
         const response = await axios.post(
             BOT_URL_SERVICE,
-            {"user": "1"},
+            {user: 1},
             {
                 headers: {
                     "YT-AUTH-TOKEN": TOKEN
                 },
                 data: {
-                    "user": "1"
+                    user: 1
                 }
             }
         );
@@ -52,19 +50,45 @@ function CryptoBots() {
         )
     }
 
+    const addUserForBot = async (user_id, bot_id) => {
+        const response = await axios.post(
+            BOT_URL_SERVICE,
+            {user: user_id, id: bot_id},
+            {
+                headers: {
+                    "YT-AUTH-TOKEN": TOKEN
+                },
+            }
+        );
+    }
+
+    const deleteUserFromBot = async (user_id, bot_id) => {
+        const response = await axios.delete(
+            BOT_URL_SERVICE,
+            {
+                headers: {
+                    "YT-AUTH-TOKEN": TOKEN
+                },
+                data: {
+                    "id": bot_id,
+                    "user": user_id
+                }
+            }
+        );
+    }
+
     return (
         <Container className="CryptoBots">
             <Row className='flex-column justify-content-center align-items-center'>
                 <h1>Crypto Bots</h1>
-                <h2>Manage data with the buttons below!</h2>
             </Row>
 
-            <Row className='justify-content-around fixed-top'>
+            <Row className='justify-content-around'>
                 <Button onClick={getBots}>
-                    Get Bots
+                    Список ботов
                 </Button>
                 <Button onClick={addBot}>
-                    Add Bot
+                    Добавить бота
                 </Button>
             </Row>
 
@@ -87,10 +111,22 @@ function CryptoBots() {
                             </Col>
 
                             <Col>
-                                <Button onClick={deleteBotById(bot.id)}>
-                                    Удалить бота
+                                <Button onClick={addUserForBot(1, bot.id)}>
+                                    Добавить пользователя боту
                                 </Button>
                             </Col>
+
+                            <Col>
+                                <Button onClick={deleteUserFromBot(1, bot.id)}>
+                                    Удалить пользователя у бота
+                                </Button>
+                            </Col>
+
+                            {/*<Col>*/}
+                            {/*    <Button onClick={deleteBotById(bot.id)}>*/}
+                            {/*        Удалить бота*/}
+                            {/*    </Button>*/}
+                            {/*</Col>*/}
                         </Row>
                     );
                 })}
