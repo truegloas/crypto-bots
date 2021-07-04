@@ -76,6 +76,7 @@ function CryptoBots() {
                                 <p>Идентификатор бота: </p>
                                 <p>{bot.id}</p>
                             </Col>
+
                             <Col className='flex-row flex-nowrap col-auto'>
                                 <p>Пользователи бота: </p>
                                 {bot.users.map((user) => {
@@ -84,9 +85,12 @@ function CryptoBots() {
                                     )
                                 })}
                             </Col>
-                            <Button onClick={deleteBotById(bot.id)}>
-                                Удалить бота
-                            </Button>
+
+                            <Col>
+                                <Button onClick={deleteBotById(bot.id)}>
+                                    Удалить бота
+                                </Button>
+                            </Col>
                         </Row>
                     );
                 })}
