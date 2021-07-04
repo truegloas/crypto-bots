@@ -123,11 +123,11 @@ function CryptoBots() {
                                 </Button>
                             </Col>
 
-                            {/*<Col>*/}
-                            {/*    <Button onClick={deleteBotById(bot.id)}>*/}
-                            {/*        Удалить бота*/}
-                            {/*    </Button>*/}
-                            {/*</Col>*/}
+                            <Col>
+                                <Button onClick={deleteBotById(bot.id)}>
+                                    Удалить бота
+                                </Button>
+                            </Col>
                         </Row>
                     );
                 })}
