@@ -8,6 +8,7 @@ import TOKEN from './local/local.js';
 
 function CryptoBots() {
     const BOT_URL_SERVICE = 'https://back.yourtar.ru/api/admin/bot/';
+    const USER_URL_SERVICE = 'https://back.yourtar.ru/api/admin/bot/user';
 
     const [bots, setBots] = useState(null);
 
@@ -52,7 +53,7 @@ function CryptoBots() {
 
     const addUserForBot = async (user_id, bot_id) => {
         const response = await axios.post(
-            BOT_URL_SERVICE,
+            USER_URL_SERVICE,
             {user: user_id, id: bot_id},
             {
                 headers: {
@@ -64,7 +65,7 @@ function CryptoBots() {
 
     const deleteUserFromBot = async (user_id, bot_id) => {
         const response = await axios.delete(
-            BOT_URL_SERVICE,
+            USER_URL_SERVICE,
             {
                 headers: {
                     "YT-AUTH-TOKEN": TOKEN
