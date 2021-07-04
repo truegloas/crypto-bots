@@ -1,5 +1,7 @@
 import axios from 'axios'
 import React, { useState } from 'react'
+import { Container, Row, Button } from 'react-bootstrap'
+
 import './CryptoBots.css';
 import TOKEN from './local/local.js';
 
@@ -9,7 +11,7 @@ function CryptoBots() {
 
     const [bots, setBots] = useState(null);
 
-    const fetchData = async () => {
+    const getBots = async () => {
         const response = await axios.get(
             BOT_SERVICE_URL,
             {headers: {
@@ -20,30 +22,35 @@ function CryptoBots() {
     };
 
     return (
-        <div className="CryptoBots">
-            <h1>GET Bots</h1>
-            <h2>Fetch a list from an API and display it</h2>
+        <Container className="CryptoBots">
+            <Row className='flex-column justify-content-center align-items-center'>
+                <h1>Crypto Bots</h1>
+                <h2>Manage data with the buttons below!</h2>
+            </Row>
 
-            <div>
-                <button className="fetch-button" onClick={fetchData}>
-                    Fetch Data
-                </button>
-            </div>
+            <Row>
+                <Button className="fetch-Button" onClick={getBots}>
+                    Get Bots
+                </Button>
+            </Row>
 
-            <div className="bots">
-                {bots &&
-                bots.map((bot) => {
+            <Row className="flex-column justify-content-center align-items-center">
+                {bots && bots.map((bot) => {
                     return (
-                        <div className="bot" key={bot.id}>
-                            <div className="details">
+                        <Row className="" key={bot.id}>
+                            <Row className="">
                                 <p>Идентификатор бота: {bot.id}</p>
-                                <p>Пользователи бота: {bot.users}</p>
-                            </div>
-                        </div>
+                                <p>Пользователи бота: {bot.users.map((user) => {
+                                    return (
+                                        <p>{user}</p>
+                                    )
+                                })}</p>
+                            </Row>
+                        </Row>
                     );
                 })}
-            </div>
-        </div>
+            </Row>
+        </Container>
     );
 }
 
