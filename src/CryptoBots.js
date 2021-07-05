@@ -1,6 +1,6 @@
 import axios from 'axios'
-import React, { useState } from 'react'
-import {Container, Row, Button, Col} from 'react-bootstrap'
+import React, { useState, useEffect } from 'react'
+import {Container, Row, Button, Col, InputGroup, Form, FormControl} from 'react-bootstrap'
 
 import './CryptoBots.css';
 import TOKEN from './local/local.js';
@@ -11,6 +11,8 @@ function CryptoBots() {
     const USER_URL_SERVICE = 'https://back.yourtar.ru/api/admin/bot/user';
 
     const [bots, setBots] = useState(null);
+    const [url, setUrl] = useState(null);
+    const [userId, setUserId] = useState(null);
 
     const getBots = async () => {
         const response = await axios.get(
@@ -22,19 +24,23 @@ function CryptoBots() {
         setBots(response.data['data'])
     };
 
-    const addBot = async () => {
-        const response = await axios.post(
-            BOT_URL_SERVICE,
-            {user: 1},
-            {
-                headers: {
-                    "YT-AUTH-TOKEN": TOKEN
-                },
-                data: {
-                    user: 1
-                }
-            }
-        );
+    useEffect(() => {
+        getBots()
+    }, [])
+
+    const addBot = async (url) => {
+        let data = new FormData();
+        data.append("url", url);
+
+        const response = await fetch( BOT_URL_SERVICE, {
+            method: 'POST',
+            headers: {
+                "YT-AUTH-TOKEN": TOKEN
+            },
+            body: data
+        });
+
+        getBots()
     };
 
     const deleteBotById = async (bot_id) => {
@@ -44,17 +50,23 @@ function CryptoBots() {
                 headers: {
                     "YT-AUTH-TOKEN": TOKEN
                 },
-                data: {
+                data: JSON.stringify({
                     "id": bot_id
-                }
+                })
             }
         )
+
+        getBots()
     }
 
     const addUserForBot = async (user_id, bot_id) => {
+        const formData = new FormData()
+        formData.append('user', user_id)
+        formData.append('id', bot_id)
+
         const response = await axios.post(
             USER_URL_SERVICE,
-            {user: user_id, id: bot_id},
+            formData,
             {
                 headers: {
                     "YT-AUTH-TOKEN": TOKEN
@@ -70,10 +82,10 @@ function CryptoBots() {
                 headers: {
                     "YT-AUTH-TOKEN": TOKEN
                 },
-                data: {
+                data: JSON.stringify({
                     "id": bot_id,
                     "user": user_id
-                }
+                })
             }
         );
     }
@@ -85,46 +97,54 @@ function CryptoBots() {
             </Row>
 
             <Row className='justify-content-around'>
-                <Button onClick={getBots}>
-                    Список ботов
-                </Button>
-                <Button onClick={addBot}>
-                    Добавить бота
-                </Button>
+                <InputGroup>
+                    <Button onClick={() => addBot(url)}>
+                        Добавить бота
+                    </Button>
+                    <FormControl
+                        placeholder="URL"
+                        onChange={event => setUrl(event.target.value)}
+                    />
+                </InputGroup>
             </Row>
 
             <Row className="flex-column justify-content-center align-items-center text-nowrap">
                 {bots && bots.map((bot) => {
                     return (
-                        <Row key={bot.id}>
+                        <Row key={bot.id} className='flex-row flex-wrap justify-content-center align-items-center'>
                             <Col className='flex-row flex-nowrap'>
-                                <p>Идентификатор бота: </p>
-                                <p>{bot.id}</p>
+                                <span>Идентификатор бота: </span>
+                                <span>{bot.id}</span>
                             </Col>
 
-                            <Col className='flex-row flex-nowrap col-auto'>
-                                <p>Пользователи бота: </p>
+                            <Col className='flex-row flex-nowrap justify-content-between'>
+                                <span>Пользователи бота: </span>
                                 {bot.users.map((user) => {
                                     return (
-                                        <p>{user}, </p>
+                                        <Col>
+                                            <span>{user}, </span>
+                                            <Button onClick={() => deleteUserFromBot(user, bot.id)}>
+                                                Удалить
+                                            </Button>
+                                        </Col>
                                     )
                                 })}
                             </Col>
 
                             <Col>
-                                <Button onClick={addUserForBot(1, bot.id)}>
-                                    Добавить пользователя боту
-                                </Button>
+                                <InputGroup>
+                                    <Button onClick={() => addUserForBot(userId, bot.id)}>
+                                        Добавить пользователя боту
+                                    </Button>
+                                    <FormControl
+                                        placeholder="ID"
+                                        onChange={event => setUserId(event.target.value)}
+                                    />
+                                </InputGroup>
                             </Col>
 
                             <Col>
-                                <Button onClick={deleteUserFromBot(1, bot.id)}>
-                                    Удалить пользователя у бота
-                                </Button>
-                            </Col>
-
-                            <Col>
-                                <Button onClick={deleteBotById(bot.id)}>
+                                <Button onClick={() => deleteBotById(bot.id)}>
                                     Удалить бота
                                 </Button>
                             </Col>
