@@ -20,13 +20,22 @@ function CryptoBots() {
             {headers: {
                     "YT-AUTH-TOKEN": TOKEN
                 }}
-        );
-        setBots(response.data['data'])
+        ).then(response => {})
+            .catch(err => {
+                console.log(err)
+                alert("Ошибка: " + err.message)
+            });
+        try {
+            setBots(response.data['data'])
+        } catch (err) {
+            console.log(err)
+            alert("Ошибка: " + err.message)
+        }
     };
 
     useEffect(() => {
-        getBots()
-    }, [])
+        getBots();
+    }, []);
 
     const addBot = async (url) => {
         let data = new FormData();
@@ -38,9 +47,13 @@ function CryptoBots() {
                 "YT-AUTH-TOKEN": TOKEN
             },
             body: data
-        });
+        }).then(response => response.json())
+            .catch(err => {
+                console.log(err)
+                alert("Ошибка: " + err.message)
+            });
 
-        getBots()
+        getBots();
     };
 
     const deleteBotById = async (bot_id) => {
@@ -54,9 +67,13 @@ function CryptoBots() {
                     "id": bot_id
                 })
             }
-        )
+        ).then(response => {})
+            .catch(err => {
+                console.log(err)
+                alert("Ошибка: " + err.message)
+            });
 
-        getBots()
+        getBots();
     }
 
     const addUserForBot = async (user_id, bot_id) => {
@@ -72,7 +89,13 @@ function CryptoBots() {
                     "YT-AUTH-TOKEN": TOKEN
                 },
             }
-        );
+        ).then(response => {})
+            .catch(err => {
+                console.log(err)
+                alert("Ошибка: " + err.message)
+            });
+
+        getBots();
     }
 
     const deleteUserFromBot = async (user_id, bot_id) => {
@@ -87,7 +110,13 @@ function CryptoBots() {
                     "user": user_id
                 })
             }
-        );
+        ).then(response => {})
+            .catch(err => {
+                console.log(err)
+                alert("Ошибка: " + err.message)
+            });
+
+        getBots();
     }
 
     return (
