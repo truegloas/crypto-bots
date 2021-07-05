@@ -20,17 +20,11 @@ function CryptoBots() {
             {headers: {
                     "YT-AUTH-TOKEN": TOKEN
                 }}
-        ).then(response => {})
-            .catch(err => {
+        ).catch(err => {
                 console.log(err)
                 alert("Ошибка: " + err.message)
             });
-        try {
-            setBots(response.data['data'])
-        } catch (err) {
-            console.log(err)
-            alert("Ошибка: " + err.message)
-        }
+        setBots(response.data['data'])
     };
 
     useEffect(() => {
@@ -38,6 +32,15 @@ function CryptoBots() {
     }, []);
 
     const addBot = async (url) => {
+        let regexp = new RegExp(/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/)
+
+        if (!regexp.test(url)) {
+            console.log("Ошибка при вводе URL")
+            alert("Ошибка при вводе URL, проверьте правильность ввода данных")
+
+            return null
+        }
+
         let data = new FormData();
         data.append("url", url);
 
@@ -50,7 +53,7 @@ function CryptoBots() {
         }).then(response => response.json())
             .catch(err => {
                 console.log(err)
-                alert("Ошибка: " + err.message)
+                alert("Ошибка: " + err.message + "\nВозможно бот с таким url существует")
             });
 
         getBots();
