@@ -1,6 +1,6 @@
 import axios from 'axios'
 import React, { useState, useEffect } from 'react'
-import {Container, Row, Button, Col, InputGroup, Form, FormControl} from 'react-bootstrap'
+import {Container, Row, Button, Col, InputGroup, FormControl} from 'react-bootstrap'
 
 import './CryptoBots.css';
 import TOKEN from './local/local.js';
@@ -60,6 +60,13 @@ function CryptoBots() {
     };
 
     const deleteBotById = async (bot_id) => {
+        // eslint-disable-next-line no-restricted-globals
+        let isDelete = confirm("Вы уверены, что хотите удалить этого бота?")
+
+        if (!isDelete) {
+            return null;
+        }
+
         const response = await axios.delete(
             BOT_URL_SERVICE,
             {
@@ -80,28 +87,38 @@ function CryptoBots() {
     }
 
     const addUserForBot = async (user_id, bot_id) => {
-        const formData = new FormData()
+        let headers = new Headers()
+        headers.append("YT-AUTH-TOKEN", TOKEN)
+
+        let formData = new FormData()
         formData.append('user', user_id)
         formData.append('id', bot_id)
 
-        const response = await axios.post(
-            USER_URL_SERVICE,
-            formData,
-            {
-                headers: {
-                    "YT-AUTH-TOKEN": TOKEN
-                },
-            }
-        ).then(response => {})
+        let requestOptions = {
+            method: 'POST',
+            headers: headers,
+            body: formData,
+        }
+
+        fetch(USER_URL_SERVICE, requestOptions)
+            .then(response => response.text())
+            .then(result => console.log(result))
             .catch(err => {
-                console.log(err)
+                console.log("Error", err)
                 alert("Ошибка: " + err.message)
-            });
+            })
 
         getBots();
     }
 
     const deleteUserFromBot = async (user_id, bot_id) => {
+        // eslint-disable-next-line no-restricted-globals
+        let isDelete = confirm("Вы уверены, что хотите удалить этого пользователя у бота?")
+
+        if (isDelete) {
+            return null
+        }
+
         const response = await axios.delete(
             USER_URL_SERVICE,
             {
